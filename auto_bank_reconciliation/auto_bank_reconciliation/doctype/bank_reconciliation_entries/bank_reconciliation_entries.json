@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "creation": "2022-07-16 13:30:13.329334",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "posting_date",
+  "party_type",
+  "party",
+  "party_name",
+  "payment_entry",
+  "column_break_7",
+  "rec",
+  "ref_no",
+  "reference_date",
+  "receipt",
+  "payment"
+ ],
+ "fields": [
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Party Name"
+  },
+  {
+   "fieldname": "payment_entry",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Payment Entry"
+  },
+  {
+   "fieldname": "receipt",
+   "fieldtype": "Currency",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Deposit"
+  },
+  {
+   "fieldname": "payment",
+   "fieldtype": "Currency",
+   "label": "Withdrawal"
+  },
+  {
+   "default": "0",
+   "fieldname": "rec",
+   "fieldtype": "Check",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Rec"
+  },
+  {
+   "fieldname": "ref_no",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Reference No"
+  },
+  {
+   "fieldname": "reference_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Reference Date"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type ",
+   "options": "Party Type"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Data",
+   "label": "Party"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-07-18 13:28:59.964407",
+ "modified_by": "Administrator",
+ "module": "Auto Bank Reconciliation",
+ "name": "Bank Reconciliation Entries",
+ "owner": "Administrator",
+ "permissions": [],
+ "show_preview_popup": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

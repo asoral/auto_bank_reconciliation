@@ -1,0 +1,356 @@
+{
+ "actions": [],
+ "creation": "2022-07-16 14:40:18.342314",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "preferences",
+  "bank_account_detail_section",
+  "posting_date",
+  "column_break_8",
+  "bank_account",
+  "bank_account_gl",
+  "column_break_5",
+  "period_from",
+  "period_to",
+  "column_break_7",
+  "previous_month_gl_closing_balance",
+  "include_reconciled_trans",
+  "balance_detail_section",
+  "balance_per_bank_statement",
+  "column_break_14",
+  "balance_per_cash_book",
+  "column_break_6",
+  "unreconciled_payment",
+  "unreconciled_receipt",
+  "column_break_19",
+  "reconciling_different",
+  "reconciled_bank_balance",
+  "bank_reconciling_entries_section",
+  "bank_reconciliation_entries",
+  "total_receipt",
+  "total_payment",
+  "bank_statement_import_view_section",
+  "bank_statement_import_view",
+  "reconciling_transactions_section",
+  "list_of_unpresented_cheques",
+  "total_unpresented_cheques",
+  "list_of_uncredited_cheques",
+  "total_uncredited_cheques",
+  "reconciliation_tab",
+  "balance_at_bank_statement",
+  "balance_at_cash_book",
+  "column_break_54",
+  "uncredited_cheques",
+  "unpresented_cheques",
+  "non_reconciling_transactions_tab",
+  "update_payment_entries_dw",
+  "list_of_direct_withdrawal",
+  "total_direct_withdrawal",
+  "update_payment_entries_dl",
+  "list_of_direct_lodgment",
+  "total_direct_lodgment",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "preferences",
+   "fieldtype": "Section Break",
+   "label": "Preferences"
+  },
+  {
+   "fieldname": "bank_account_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Bank Account Detail"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Bank Account",
+   "options": "Bank Account"
+  },
+  {
+   "fetch_from": "bank_account.account",
+   "fieldname": "bank_account_gl",
+   "fieldtype": "Data",
+   "label": "Bank Account GL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "period_from",
+   "fieldtype": "Date",
+   "label": "Period From"
+  },
+  {
+   "fieldname": "period_to",
+   "fieldtype": "Date",
+   "label": "Period To"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "include_reconciled_trans",
+   "fieldtype": "Check",
+   "label": "Include Reconciled Trans"
+  },
+  {
+   "fieldname": "previous_month_gl_closing_balance",
+   "fieldtype": "Currency",
+   "label": "Previous Month GL Closing Balance"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "balance_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Balance Detail"
+  },
+  {
+   "fieldname": "balance_per_bank_statement",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Balance Per Bank Statement"
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "balance_per_cash_book",
+   "fieldtype": "Currency",
+   "label": "Balance Per Cash Book"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "B=total of unticked payment, will reduce as we tick",
+   "fieldname": "unreconciled_payment",
+   "fieldtype": "Currency",
+   "label": "Unreconciled Payment"
+  },
+  {
+   "description": "A=total of unticked Receipt, will reduce as we tick",
+   "fieldname": "unreconciled_receipt",
+   "fieldtype": "Currency",
+   "label": "Unreconciled Receipt"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Reconciled Bank Balance - CB Balance",
+   "fieldname": "reconciling_different",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Reconciling Different",
+   "read_only": 1
+  },
+  {
+   "description": "A-B+Bank ending Balance",
+   "fieldname": "reconciled_bank_balance",
+   "fieldtype": "Currency",
+   "label": "Reconciled Bank Balance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bank_reconciling_entries_section",
+   "fieldtype": "Section Break",
+   "label": "Bank GL Entries View"
+  },
+  {
+   "fieldname": "bank_reconciliation_entries",
+   "fieldtype": "Table",
+   "label": "Bank Reconciliation Entries",
+   "options": "Bank Reconciliation Entries"
+  },
+  {
+   "fieldname": "total_receipt",
+   "fieldtype": "Currency",
+   "label": "Total Receipt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_payment",
+   "fieldtype": "Currency",
+   "label": "Total Payment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bank_statement_import_view_section",
+   "fieldtype": "Section Break",
+   "label": "Bank Statement Import View"
+  },
+  {
+   "fieldname": "bank_statement_import_view",
+   "fieldtype": "Table",
+   "options": "Bank Import View"
+  },
+  {
+   "fieldname": "reconciling_transactions_section",
+   "fieldtype": "Section Break",
+   "label": "Reconciling Transactions"
+  },
+  {
+   "fieldname": "list_of_unpresented_cheques",
+   "fieldtype": "Table",
+   "label": "List of Unpresented Cheques",
+   "options": "List of Unpresented Cheques"
+  },
+  {
+   "fieldname": "total_unpresented_cheques",
+   "fieldtype": "Currency",
+   "label": "Total Unpresented Cheques",
+   "read_only": 1
+  },
+  {
+   "fieldname": "list_of_uncredited_cheques",
+   "fieldtype": "Table",
+   "label": "List of Uncredited Cheques",
+   "options": "List of Unpresented Cheques"
+  },
+  {
+   "fieldname": "total_uncredited_cheques",
+   "fieldtype": "Currency",
+   "label": "Total Uncredited Cheques",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reconciliation_tab",
+   "fieldtype": "Section Break",
+   "label": "Reconciliation"
+  },
+  {
+   "fieldname": "balance_at_bank_statement",
+   "fieldtype": "Currency",
+   "label": "Balance At Bank Statement",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_at_cash_book",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Balance At Cash Book",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_54",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "uncredited_cheques",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Uncredited Cheques",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unpresented_cheques",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Unpresented Cheques",
+   "read_only": 1
+  },
+  {
+   "fieldname": "non_reconciling_transactions_tab",
+   "fieldtype": "Section Break",
+   "label": "Non Reconciling Transactions"
+  },
+  {
+   "fieldname": "update_payment_entries_dw",
+   "fieldtype": "Button",
+   "label": "Update Payment Entries DW"
+  },
+  {
+   "fieldname": "list_of_direct_withdrawal",
+   "fieldtype": "Table",
+   "label": "List of Direct Withdrawal",
+   "options": "List of Direct Withdrawal"
+  },
+  {
+   "fieldname": "total_direct_withdrawal",
+   "fieldtype": "Currency",
+   "label": "Total Direct Withdrawal",
+   "read_only": 1
+  },
+  {
+   "fieldname": "update_payment_entries_dl",
+   "fieldtype": "Button",
+   "label": "Update Payment Entries DL"
+  },
+  {
+   "fieldname": "list_of_direct_lodgment",
+   "fieldtype": "Table",
+   "label": "List of Direct Lodgment",
+   "options": "List of Direct Lodgment"
+  },
+  {
+   "fieldname": "total_direct_lodgment",
+   "fieldtype": "Currency",
+   "label": "Total Direct Lodgment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Bank Reconciliation",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-07-19 11:52:33.347994",
+ "modified_by": "Administrator",
+ "module": "Auto Bank Reconciliation",
+ "name": "Bank Reconciliation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

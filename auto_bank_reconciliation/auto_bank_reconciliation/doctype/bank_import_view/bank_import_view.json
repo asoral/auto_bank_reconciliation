@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-07-16 13:31:00.287165",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "posting_date",
+  "name1",
+  "transaction_description",
+  "reference",
+  "type",
+  "withdrawal",
+  "deposit",
+  "rec"
+ ],
+ "fields": [
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Name"
+  },
+  {
+   "fieldname": "transaction_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Transaction Description"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Type"
+  },
+  {
+   "fieldname": "withdrawal",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Withdrawal"
+  },
+  {
+   "fieldname": "deposit",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Deposit"
+  },
+  {
+   "default": "0",
+   "fieldname": "rec",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Rec"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-07-18 10:42:55.118796",
+ "modified_by": "Administrator",
+ "module": "Auto Bank Reconciliation",
+ "name": "Bank Import View",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
