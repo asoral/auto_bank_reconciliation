@@ -124,5 +124,5 @@ class BankReconciliation(Document):
 		print(" this is match table one two ")
 		for b in self.bank_reconciliation_entries :	
 			for s in self.bank_statement_import_view:
-				if b.get("ref_no") == s.get("reference") and b.get("amount") == s.get("amount") and s.rec == 0 and b.rec == 0:
+				if b.get("ref_no") == s.get("reference") and b.get("amount") == s.get("amount") :
 					b.rec = s.rec = 1
