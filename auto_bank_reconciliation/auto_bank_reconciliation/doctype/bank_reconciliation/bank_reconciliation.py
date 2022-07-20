@@ -44,7 +44,8 @@ class BankReconciliation(Document):
 						"payment": t.get("paid_amount") if t.get("payment_type") == "Pay" else 0 ,
 						"rec": t.get('rec'),
 						"ref_no": t.get("reference_no"),
-						"reference_date": t.get("reference_date")
+						"reference_date": t.get("reference_date"),
+						"amount":  t.get("paid_amount")
 					}
 				)
 
@@ -70,19 +71,25 @@ class BankReconciliation(Document):
 					"type": t.get("type"),
 					"withdrawal": t.get("withdrawal"),
 					"deposit" : t.get("deposit"),
-					"rec" : t.get("rec")
+					"rec" : t.get("rec"),
+					"amount": t.get("withdrawal") if t.get("withdrawal") else t.get("deposit")
 				})
 
 	@frappe.whitelist()
 	def get_unpresented_cheque(self):
+		sum_deposit = sum_withdraw = un_rpay = un_rec = r_bbal = r_diff = 0  
 		print(" this is get_unpresented_cheque")	
 		for s in self.bank_reconciliation_entries :
+			sum_deposit = sum_deposit + s.get("receipt") 
+			sum_withdraw = sum_withdraw + s.get("payment")
+	
 			print(" this is common 2222222222222222222222" )
 			mode = frappe.get_doc("Payment Entry", s.get("payment_entry"))
 
 			
 			
 			if mode.get("mode_of_payment") == "Cheque" and mode.get("payment_type") == "Pay" and s.get('rec') == 0:
+				un_rpay = un_rpay + mode.get("paid_amount")
 				print(" this is referec nooooooooooooooooooo", mode.get("reference_no"))
 				self.append("list_of_unpresented_cheques",{
 					"posting_date": mode.get("posting_date"),
@@ -93,6 +100,7 @@ class BankReconciliation(Document):
 				})
 				
 			if mode.get("mode_of_payment") == "Cheque" and mode.get("payment_type") == "Receive" and s.get('rec') == 0:
+				un_rec = un_rec + mode.get("paid_amount")
 				print(" this is referec nooooooooooooooooooo", mode.get("reference_no"))
 				self.append("list_of_uncredited_cheques",{
 					"posting_date": mode.get("posting_date"),
@@ -102,10 +110,19 @@ class BankReconciliation(Document):
 					"amount" : mode.get("paid_amount")
 				})	
 
+			if s.get("rec") == 1 and mode:
+				r_bbal = r_bbal + mode.get("paid_amount")
+
+		self.balance_per_bank_statement = sum_deposit - sum_withdraw
+		self.unreconciled_payment = un_rpay
+		self.unreconciled_receipt = un_rec
+		self.reconciling_different = un_rpay - r_bbal
+		self.reconciled_bank_balance = r_bbal
+
 	@frappe.whitelist()
 	def match_table_one_two(self):
 		print(" this is match table one two ")
 		for b in self.bank_reconciliation_entries :	
 			for s in self.bank_statement_import_view:
-				if b.get("ref_no") == s.get("reference"):
+				if b.get("ref_no") == s.get("reference") and b.get("amount") == s.get("amount") and s.rec == 0 and b.rec == 0:
 					b.rec = s.rec = 1

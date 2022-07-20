@@ -7,7 +7,7 @@ frappe.ui.form.on('Bank Reconciliation', {
 		
 		// Custom buttons in groups
 		if (frm.doc.docstatus == 0){
-			frm.add_custom_button('Get All Transcations', () => {
+			frm.add_custom_button('Get All Transactions', () => {
 				console.log("Get All Transcations Button Clicked ")
 				if (frm.doc.status != 1) {
 					frm.clear_table("bank_reconciliation_entries")
@@ -22,7 +22,7 @@ frappe.ui.form.on('Bank Reconciliation', {
 						}
 					});
 				}
-			}, 'Get Transcation');
+			}, 'Get Transaction');
 
 			frm.add_custom_button('Get Reconsiling Entries', () => {
 				console.log("Get Reconsiling Entries Button Clicked ")
@@ -40,15 +40,15 @@ frappe.ui.form.on('Bank Reconciliation', {
 					});
 				}
 
-			}, 'Get Transcation');
+			}, 'Get Transaction');
 		}
 
 		
 	},
 
 	before_save: function(frm) {
-		console.log(" this len ", frm.doc.bank_statement_import_view.length)
-		if(frm.doc.bank_statement_import_view.length > 0 && frm.doc.bank_statement_import_view.length > 0){
+		// console.log(" this len ", frm.doc.bank_statement_import_view.length)
+		if(frm.doc.bank_statement_import_view.length > 0 && frm.doc.bank_statement_import_view.length > 0 ){
 
 			frm.clear_table("list_of_unpresented_cheques")
 			frm.clear_table("list_of_uncredited_cheques")
@@ -59,6 +59,8 @@ frappe.ui.form.on('Bank Reconciliation', {
 				callback: function() {
 					frm.refresh_field('bank_statement_import_view');
 					frm.refresh_field('bank_reconciliation_entries');
+
+					
 				
 
 					frm.call({
@@ -67,8 +69,8 @@ frappe.ui.form.on('Bank Reconciliation', {
 						freeze_message: __('Adding Reconsiling Entries'),
 						callback: function() {
 							console.log(" this is 3 and 4 0000000000000000")
-							frm.refresh_field('get_unpresented_cheque');
-							frm.refresh_field('get_uncredited_cheque');
+							// frm.refresh_field('get_unpresented_cheque');
+							// frm.refresh_field('get_uncredited_cheque');
 		
 							var total_receipt = 0;
 							var total_payment= 0;
