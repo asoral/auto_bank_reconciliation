@@ -18,6 +18,11 @@ class BankReconciliation(Document):
 				print(" inside rec 22222222222222222")
 				frappe.db.set_value('Bank Statement', s.get("name1"), 'rec', 1, update_modified=False)
 		
+	def before_submit(self):
+		print(" This is before submit ")
+		if self.reconciling_different > 0:
+			frappe.throw(" Cannot submit this Document Reconciling Difference is Greater than Zero ")
+
 	
 	@frappe.whitelist()
 	def get_all_transcations(self):
