@@ -33,7 +33,7 @@ class BankReconciliation(Document):
 			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], "docstatus": 1 }, ["*"])
 		else:
 
-			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], r"rec":0, "docstatus": 1 }, ["*"])
+			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], "rec":0, "docstatus": 1 }, ["*"])
 		# print(" this are transcations", trans)
 		if trans:
 			for t in trans:
@@ -65,7 +65,7 @@ class BankReconciliation(Document):
 		if self.include_reconciled_trans == 1: 
 			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]]}, ["*"])
 		else:
-			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]], r"rec":0 }, ["*"])
+			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]], "rec":0 }, ["*"])
 		if trans:
 			for t in trans:
 				self.append("bank_statement_import_view",{
