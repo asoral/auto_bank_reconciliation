@@ -16,6 +16,7 @@
   "period_from",
   "period_to",
   "column_break_7",
+  "reco_criteria",
   "previous_month_gl_closing_balance",
   "include_reconciled_trans",
   "balance_detail_section",
@@ -119,6 +120,7 @@
   {
    "fieldname": "previous_month_gl_closing_balance",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Previous Month GL Closing Balance"
   },
   {
@@ -181,7 +183,8 @@
    "fieldname": "bank_reconciliation_entries",
    "fieldtype": "Table",
    "label": "Bank Reconciliation Entries",
-   "options": "Bank Reconciliation Entries"
+   "options": "Bank Reconciliation Entries",
+   "read_only": 1
   },
   {
    "fieldname": "total_receipt",
@@ -203,7 +206,8 @@
   {
    "fieldname": "bank_statement_import_view",
    "fieldtype": "Table",
-   "options": "Bank Import View"
+   "options": "Bank Import View",
+   "read_only": 1
   },
   {
    "fieldname": "reconciling_transactions_section",
@@ -242,8 +246,7 @@
   {
    "fieldname": "balance_at_bank_statement",
    "fieldtype": "Currency",
-   "label": "Balance At Bank Statement",
-   "read_only": 1
+   "label": "Balance At Bank Statement"
   },
   {
    "fieldname": "balance_at_cash_book",
@@ -321,12 +324,20 @@
    "options": "Bank Reconciliation",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "default": "Reference and Amount",
+   "fieldname": "reco_criteria",
+   "fieldtype": "Select",
+   "label": "Reconciling Criteria",
+   "options": "Reference and Amount\nDate and Amount\nName and Amount",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-07-20 11:59:40.990215",
+ "modified": "2022-08-02 17:43:55.693378",
  "modified_by": "Administrator",
  "module": "Auto Bank Reconciliation",
  "name": "Bank Reconciliation",

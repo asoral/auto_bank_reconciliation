@@ -3,13 +3,13 @@
  "allow_rename": 1,
  "creation": "2022-07-16 13:31:00.287165",
  "doctype": "DocType",
- "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "posting_date",
-  "name1",
+  "party_name",
   "transaction_description",
   "reference",
+  "name1",
   "column_break_5",
   "type",
   "withdrawal",
@@ -32,7 +32,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Name"
+   "label": "Bank Statement"
   },
   {
    "fieldname": "transaction_description",
@@ -51,10 +51,8 @@
   {
    "fieldname": "type",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_filter": 1,
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
    "label": "Type"
   },
   {
@@ -87,12 +85,17 @@
   {
    "fieldname": "column_break_5",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "label": "Party Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-07-20 11:06:38.614707",
+ "modified": "2022-08-02 17:32:28.286689",
  "modified_by": "Administrator",
  "module": "Auto Bank Reconciliation",
  "name": "Bank Import View",

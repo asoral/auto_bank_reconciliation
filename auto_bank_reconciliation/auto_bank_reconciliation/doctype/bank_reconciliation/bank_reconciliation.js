@@ -90,6 +90,7 @@ frappe.ui.form.on('Bank Reconciliation', {
 								total_unpresented_cheque = total_unpresented_cheque + row.amount;
 								});
 							frm.set_value('total_unpresented_cheques', total_unpresented_cheque);
+							frm.set_value('unpresented_cheques', total_unpresented_cheque);
 							// frm.refresh_field("total_unpresented_cheques")
 		
 		
@@ -98,7 +99,16 @@ frappe.ui.form.on('Bank Reconciliation', {
 								total_uncredited_cheques = total_uncredited_cheques + row.amount;
 								});
 							frm.set_value('total_uncredited_cheques', total_uncredited_cheques);	
+							frm.set_value('uncredited_cheques', total_uncredited_cheques);
 							// frm.refresh_field("total_uncredited_cheques")
+
+							// Balance at bank statement + Total uncredited cheque - total unpresented cheque.
+							let bal_bank = 0
+							let bal_cash = 0
+
+							bal_cash = flt(frm.doc.balance_at_bank_statement) + flt(frm.doc.total_uncredited_cheques) - flt(frm.doc.total_unpresented_cheques)
+
+							frm.set_value('balance_at_cash_book', bal_cash)
 							}
 						});
 				}			
@@ -189,5 +199,37 @@ frappe.ui.form.on('Bank Reconciliation', {
 		// if(frm.doc.list_of_uncredited_cheques){
 
 		// }
-	}
+	},
+
+	update_payment_entries_dw: function(frm){
+		console.log(" update_payment_entries_dw button Clicked")
+		frm.clear_table("list_of_direct_withdrawal")
+		frm.call({
+			doc: frm.doc,
+			method: "direct_withdraw",
+			callback: function() {
+				console.log(" returnn from direct_withdrawal")
+
+			}
+		});
+		frm.refresh_field("list_of_direct_withdrawal")
+		frm.refresh_field("total_direct_withdrawal")
+
+	},
+
+
+	update_payment_entries_dl: function(frm){
+		console.log(" update_payment_entries_dl button Clicked")
+		frm.clear_table("list_of_direct_lodgment")
+		frm.call({
+			doc: frm.doc,
+			method: "direct_lodgment",
+			callback: function() {
+				console.log(" returnn from direct_lodgment")
+			}
+		});
+		
+		frm.refresh_field("list_of_direct_lodgment")
+		frm.refresh_field("total_direct_lodgment")
+	},
 });

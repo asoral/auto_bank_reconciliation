@@ -72,11 +72,13 @@ class BankReconciliation(Document):
 					"withdrawal": t.get("withdrawal"),
 					"deposit" : t.get("deposit"),
 					"rec" : t.get("rec"),
-					"amount": t.get("withdrawal") if t.get("withdrawal") else t.get("deposit")
+					"amount": t.get("withdrawal") if t.get("withdrawal") else t.get("deposit"),
+					"party_name" : t.get("name1")
 				})
 
 	@frappe.whitelist()
 	def get_unpresented_cheque(self):
+		
 		sum_deposit = sum_withdraw = un_rpay = un_rec = r_bbal = r_diff = 0  
 		print(" this is get_unpresented_cheque")	
 		for s in self.bank_reconciliation_entries :
@@ -118,11 +120,75 @@ class BankReconciliation(Document):
 		self.unreconciled_receipt = un_rec
 		self.reconciling_different = un_rpay - r_bbal
 		self.reconciled_bank_balance = r_bbal
+		
 
 	@frappe.whitelist()
 	def match_table_one_two(self):
 		print(" this is match table one two ")
-		for b in self.bank_reconciliation_entries :	
-			for s in self.bank_statement_import_view:
-				if b.get("ref_no") == s.get("reference") and b.get("amount") == s.get("amount") :
-					b.rec = s.rec = 1
+
+		if self.reco_criteria == "Reference and Amount":
+			print(" this is one 111111111111111111 ")
+			for b in self.bank_reconciliation_entries :	
+				for s in self.bank_statement_import_view:
+					if b.get("ref_no") == s.get("reference") and b.get("amount") == s.get("amount") :
+						b.rec = s.rec = 1
+
+		elif self.reco_criteria == "Date and Amount":
+			print(" this is two 22222222222")
+			for b in self.bank_reconciliation_entries :	
+				for s in self.bank_statement_import_view:
+					if b.get("posting_date") == s.get("posting_date") and b.get("amount") == s.get("amount") :
+						b.rec = s.rec = 1
+
+		else: 
+			print(" this is three 3333333333333")
+			for b in self.bank_reconciliation_entries :	
+				for s in self.bank_statement_import_view:
+					if b.get("party_name") == s.get("party_name") and b.get("amount") == s.get("amount") :
+						b.rec = s.rec = 1				
+
+	@frappe.whitelist()
+	def direct_withdraw(self):
+		total = 0
+		print(" this is match table one two ")
+		for s in self.bank_statement_import_view:
+			# print(" this is s dw")
+			if s.withdrawal > 0 and s.rec == 0:
+				print(" this is s withda")
+				total = total +  s.withdrawal
+				self.append("list_of_direct_withdrawal",{
+					"posting_date": s.get("posting_date"),
+					"description": s.get("transcation_description"),
+					"account_type": "",
+					"party": s.get("party_name"),
+					"account_name": "",
+					"amount": s.get("withdrawal"),
+					"ref": s.get("reference"),
+					"ref_date" : "",
+					"remarks": ""
+				})
+
+		self.total_direct_withdrawal = total		
+
+	@frappe.whitelist()
+	def direct_lodgment(self):
+		total = 0
+		print(" this is match table one two ")	
+		for s in self.bank_statement_import_view:
+			print(" this is s dl")
+			if s.deposit > 0 and s.rec == 0:
+				total = total +  s.deposit
+				print(" this is deosite")
+				self.append("list_of_direct_lodgment",{
+					"posting_date": s.get("posting_date"),
+					"description": s.get("transcation_description"),
+					"account_type": "",
+					"party": s.get("party_name"),
+					"account_name": "",
+					"amount": s.get("deposit"),
+					"ref": s.get("reference"),
+					"ref_date" : "",
+					"remarks": ""
+				})
+
+		self.total_direct_lodgment = total	
