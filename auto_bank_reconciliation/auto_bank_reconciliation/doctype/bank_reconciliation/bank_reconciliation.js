@@ -202,34 +202,37 @@ frappe.ui.form.on('Bank Reconciliation', {
 	},
 
 	update_payment_entries_dw: function(frm){
-		console.log(" update_payment_entries_dw button Clicked")
-		frm.clear_table("list_of_direct_withdrawal")
-		frm.call({
-			doc: frm.doc,
-			method: "direct_withdraw",
-			callback: function() {
-				console.log(" returnn from direct_withdrawal")
+		if(frm.doc.docstatus == 0 ){
+			console.log(" update_payment_entries_dw button Clicked")
+			frm.clear_table("list_of_direct_withdrawal")
+			frm.call({
+				doc: frm.doc,
+				method: "direct_withdraw",
+				callback: function() {
+					console.log(" returnn from direct_withdrawal")
 
-			}
-		});
-		frm.refresh_field("list_of_direct_withdrawal")
-		frm.refresh_field("total_direct_withdrawal")
-
+				}
+			});
+			frm.refresh_field("list_of_direct_withdrawal")
+			frm.refresh_field("total_direct_withdrawal")
+		}
 	},
 
 
 	update_payment_entries_dl: function(frm){
-		console.log(" update_payment_entries_dl button Clicked")
-		frm.clear_table("list_of_direct_lodgment")
-		frm.call({
-			doc: frm.doc,
-			method: "direct_lodgment",
-			callback: function() {
-				console.log(" returnn from direct_lodgment")
-			}
-		});
-		
-		frm.refresh_field("list_of_direct_lodgment")
-		frm.refresh_field("total_direct_lodgment")
+		if(frm.doc.docstatus == 0 ){
+			console.log(" update_payment_entries_dl button Clicked")
+			frm.clear_table("list_of_direct_lodgment")
+			frm.call({
+				doc: frm.doc,
+				method: "direct_lodgment",
+				callback: function() {
+					console.log(" returnn from direct_lodgment")
+				}
+			});
+			
+			frm.refresh_field("list_of_direct_lodgment")
+			frm.refresh_field("total_direct_lodgment")
+		}
 	},
 });
