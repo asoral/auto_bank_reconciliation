@@ -2,6 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Bank Reconciliation', {
+
+	
+
 	refresh: function(frm) {
 		
 		
@@ -109,6 +112,14 @@ frappe.ui.form.on('Bank Reconciliation', {
 							bal_cash = flt(frm.doc.balance_at_bank_statement) + flt(frm.doc.total_uncredited_cheques) - flt(frm.doc.total_unpresented_cheques)
 
 							frm.set_value('balance_at_cash_book', bal_cash)
+							
+							
+							let rbb = flt(frm.doc.unreconciled_receipt) - flt(frm.doc.unreconciled_payment) +  flt(frm.doc.balance_per_bank_statement)
+							frm.set_value('reconciled_bank_balance', rbb)
+							
+							console.log(" this is rrb", rbb)
+							bal_bank = flt(frm.doc.reconciled_bank_balance) - flt(frm.doc.balance_at_cash_book)
+							frm.set_value('reconciling_different', bal_bank)
 							}
 						});
 				}			
