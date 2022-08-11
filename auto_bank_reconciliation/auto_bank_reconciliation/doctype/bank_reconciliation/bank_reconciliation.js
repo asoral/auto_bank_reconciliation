@@ -27,7 +27,7 @@ frappe.ui.form.on('Bank Reconciliation', {
 				}
 			}, 'Get Transaction');
 
-			frm.add_custom_button('Get Reconsiling Entries', () => {
+			frm.add_custom_button('Upload Bank Statement', () => {
 				console.log("Get Reconsiling Entries Button Clicked ")
 				frm.clear_table("bank_statement_import_view")
 				if (frm.doc.status != 1) {

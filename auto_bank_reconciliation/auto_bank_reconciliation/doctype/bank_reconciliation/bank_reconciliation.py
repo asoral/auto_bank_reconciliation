@@ -39,17 +39,35 @@ class BankReconciliation(Document):
 	
 	@frappe.whitelist()
 	def get_all_transcations(self):
-		# print(" get_all_transcations called")
+		print(" get_all_transcations called")
 
-		trans = []
+		trans_main = []
 		if self.include_reconciled_trans == 1:
-			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], "docstatus": 1 }, ["*"])
-		else:
+			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
+								"docstatus": 1, "payment_type" : "Receive", "paid_to": self.bank_account_gl }, ["*"])
 
-			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], "rec":0, "docstatus": 1 }, ["*"])
+			print(" this is transcation", trans)					
+
+			trans2 = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
+								"docstatus": 1, "payment_type" : "Pay", "paid_from": self.bank_account_gl }, ["*"])	
+
+			print(" this is trans2222", trans2)
+			trans_main = trans + trans2									
+		else:
+			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
+								"docstatus": 1, "payment_type" : "Receive", "paid_to": self.bank_account_gl,  "rec":0}, ["*"])
+			print(" this is transcation", trans)
+
+			trans2 = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
+								"docstatus": 1, "payment_type" : "Pay", "paid_from": self.bank_account_gl, "rec":0 }, ["*"])	
+			print(" this is transcation", trans2)
+			trans_main = trans + trans2		
+			
+
 		# print(" this are transcations", trans)
-		if trans:
-			for t in trans:
+		if trans_main:
+			print(" this is trancation")
+			for t in trans_main:
 				# print(" this is t", t)
 				self.append(
 					"bank_reconciliation_entries",{
@@ -76,9 +94,9 @@ class BankReconciliation(Document):
 
 		trans = []
 		if self.include_reconciled_trans == 1: 
-			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]]}, ["*"])
+			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]], "bank_account": self.bank_account }, ["*"])
 		else:
-			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]], "rec":0 }, ["*"])
+			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]], "rec":0, "bank_account": self.bank_account }, ["*"])
 		if trans:
 			for t in trans:
 				self.append("bank_statement_import_view",{
