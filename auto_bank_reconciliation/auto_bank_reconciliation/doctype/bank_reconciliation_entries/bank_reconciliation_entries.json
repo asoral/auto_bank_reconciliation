@@ -15,7 +15,8 @@
   "receipt",
   "payment",
   "amount",
-  "rec"
+  "rec",
+  "is_gl"
  ],
  "fields": [
   {
@@ -108,12 +109,19 @@
    "fieldtype": "Currency",
    "hidden": 1,
    "label": "Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_gl",
+   "fieldtype": "Check",
+   "label": "Is GL",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-07-21 10:38:09.037008",
+ "modified": "2022-08-24 16:43:47.779796",
  "modified_by": "Administrator",
  "module": "Auto Bank Reconciliation",
  "name": "Bank Reconciliation Entries",

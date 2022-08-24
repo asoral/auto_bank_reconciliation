@@ -9,8 +9,11 @@ class BankReconciliation(Document):
 	def on_cancel(self):
 		# print(" this is cancel event called")
 		for b in self.bank_reconciliation_entries :	
-			if b.get("rec") == 1:
+			if b.get("rec") == 1 and b.get("is_gl") == 0:
 				frappe.db.set_value('Payment Entry', b.get("payment_entry"), 'rec', 0, update_modified=False)
+			elif b.get("rec") == 1 and b.get("is_gl") == 1:
+				frappe.db.set_value('GL Entry',{ "voucher_no": b.get("payment_entry")}, 'rec', 0, update_modified=False)	
+				frappe.db.set_value('Journal Entry', b.get("payment_entry") , 'rec', 0, update_modified=False)	
 
 		for s in self.bank_statement_import_view:
 			# print(" inside rec 22222222222222222")
@@ -22,8 +25,11 @@ class BankReconciliation(Document):
 	def on_submit(self):
 		# print(" we are submitting  00000000000000000000")
 		for b in self.bank_reconciliation_entries :	
-			if b.get("rec") == 1:
+			if b.get("rec") == 1 and b.get("is_gl") == 0:
 				frappe.db.set_value('Payment Entry', b.get("payment_entry"), 'rec', 1, update_modified=False)
+			elif b.get("rec") == 1 and b.get("is_gl") == 1:
+				frappe.db.set_value('GL Entry', { "voucher_no": b.get("payment_entry")}, 'rec', 1, update_modified=False)	
+				frappe.db.set_value('Journal Entry', b.get("payment_entry") , 'rec', 1, update_modified=False)	
 
 		for s in self.bank_statement_import_view:
 			# print(" inside rec 22222222222222222")
@@ -81,12 +87,59 @@ class BankReconciliation(Document):
 						"rec": t.get('rec'),
 						"ref_no": t.get("reference_no"),
 						"reference_date": t.get("reference_date"),
-						"amount":  t.get("paid_amount")
+						"amount":  t.get("paid_amount"),
+						"is_gl": 0
 					}
 				)
 
+		# je = frappe.get_all("Journal Entry Account", { "creation": ["Between", [self.period_from, self.period_to]], 
+		# 						"docstatus": 1}, ["*"])		
+		# if je:
+		# 	for t in je:
+		# 		self.append(
+		# 				"bank_reconciliation_entries",{
+		# 					"posting_date": t.get("posting_date"),
+		# 					"party_type": t.get("party_type"),
+		# 					"party" : t.get("party"),
+		# 					"party_name": t.get("party_name"),
+		# 					"payment_entry": t.get("name"),
+		# 					"receipt": t.get("paid_amount") if t.get("payment_type") == "Receive" else 0,
+		# 					"payment": t.get("paid_amount") if t.get("payment_type") == "Pay" else 0 ,
+		# 					"rec": t.get('rec'),
+		# 					"ref_no": t.get("reference_no"),
+		# 					"reference_date": t.get("reference_date"),
+		# 					"amount":  t.get("paid_amount")
+		# 				}
+		# 			)						
 
+		gl_entry = []
+		if self.include_reconciled_trans == 1:
+			gl_entry = frappe.get_all("GL Entry", { "posting_date": ["Between", [self.period_from, self.period_to]], 
+									"docstatus": 1, "voucher_type": "Journal Entry", "account": self.bank_account_gl}, ["*"])
 
+		else:
+			gl_entry = frappe.get_all("GL Entry", { "posting_date": ["Between", [self.period_from, self.period_to]], 
+									"docstatus": 1, "voucher_type": "Journal Entry", "account": self.bank_account_gl, "rec": 0 }, ["*"])						
+									
+		if gl_entry:
+			print(" this is gl entry", gl_entry)
+			for g in gl_entry:
+				self.append(
+						"bank_reconciliation_entries",{
+							"posting_date": g.get("posting_date"),
+							"party_type": g.get("party_type"),
+							"party" : g.get("party"),
+							
+							"payment_entry": g.get("voucher_no"),
+							"receipt": g.get("debit"), 
+							"payment": g.get("credit"), 
+							"rec": g.get('rec'),
+							"ref_no": frappe.get_value("Journal Entry", g.voucher_no, "cheque_no"),
+							"reference_date": frappe.get_value("Journal Entry", g.voucher_no, "cheque_date"),
+							"amount": g.get("debit") if g.get("debit") > 0 else  g.get("credit"), 
+							"is_gl": 1
+						}
+					)			
 
 	@frappe.whitelist()
 	def get_reconsiling_entries(self):
