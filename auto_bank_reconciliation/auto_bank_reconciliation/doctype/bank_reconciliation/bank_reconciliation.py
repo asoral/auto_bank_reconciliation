@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+from frappe.utils import flt
 
 class BankReconciliation(Document):
 
@@ -45,34 +46,34 @@ class BankReconciliation(Document):
 	
 	@frappe.whitelist()
 	def get_all_transcations(self):
-		print(" get_all_transcations called")
+		# print(" get_all_transcations called")
 
 		trans_main = []
 		if self.include_reconciled_trans == 1:
 			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
 								"docstatus": 1, "payment_type" : "Receive", "paid_to": self.bank_account_gl }, ["*"])
 
-			print(" this is transcation", trans)					
+			# print(" this is transcation", trans)					
 
 			trans2 = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
 								"docstatus": 1, "payment_type" : "Pay", "paid_from": self.bank_account_gl }, ["*"])	
 
-			print(" this is trans2222", trans2)
+			# print(" this is trans2222", trans2)
 			trans_main = trans + trans2									
 		else:
 			trans = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
 								"docstatus": 1, "payment_type" : "Receive", "paid_to": self.bank_account_gl,  "rec":0}, ["*"])
-			print(" this is transcation", trans)
+			# print(" this is transcation", trans)
 
 			trans2 = frappe.get_all("Payment Entry", {"posting_date": ["Between", [self.period_from, self.period_to]], 
 								"docstatus": 1, "payment_type" : "Pay", "paid_from": self.bank_account_gl, "rec":0 }, ["*"])	
-			print(" this is transcation", trans2)
+			# print(" this is transcation", trans2)
 			trans_main = trans + trans2		
 			
 
 		# print(" this are transcations", trans)
 		if trans_main:
-			print(" this is trancation")
+			# print(" this is trancation")
 			for t in trans_main:
 				# print(" this is t", t)
 				self.append(
@@ -122,7 +123,7 @@ class BankReconciliation(Document):
 									"docstatus": 1, "voucher_type": "Journal Entry", "account": self.bank_account_gl, "rec": 0 }, ["*"])						
 									
 		if gl_entry:
-			print(" this is gl entry", gl_entry)
+			# print(" this is gl entry", gl_entry)
 			for g in gl_entry:
 				self.append(
 						"bank_reconciliation_entries",{
@@ -143,7 +144,7 @@ class BankReconciliation(Document):
 
 	@frappe.whitelist()
 	def get_reconsiling_entries(self):
-		print(" 'get_reconsiling_entries', called")	
+		# print(" 'get_reconsiling_entries', called")	
 
 		trans = []
 		if self.include_reconciled_trans == 1: 
@@ -169,41 +170,76 @@ class BankReconciliation(Document):
 	def get_unpresented_cheque(self):
 		
 		sum_deposit = sum_withdraw = un_rpay = un_rec = r_bbal = r_diff = 0  
-		# print(" this is get_unpresented_cheque")	
+		# print(" this is get_unpresented_cheque")
 		for s in self.bank_reconciliation_entries :
 			sum_deposit = sum_deposit + s.get("receipt") 
 			sum_withdraw = sum_withdraw + s.get("payment")
 	
-			# print(" this is common 2222222222222222222222" )
-			mode = frappe.get_doc("Payment Entry", s.get("payment_entry"))
+			
+			mode_pe = frappe.get_value("Payment Entry", s.get("payment_entry"), "name")
+			# print(" this is mode_pe 1111", mode_pe)
+			if mode_pe and s.get("is_gl") == 0:
+				# print(" this is entry", s.get("reference_no"))
 
-			
-			
-			if mode.get("mode_of_payment") == "Cheque" and mode.get("payment_type") == "Pay" and s.get('rec') == 0:
-				un_rpay = un_rpay + mode.get("paid_amount")
-				# print(" this is referec nooooooooooooooooooo", mode.get("reference_no"))
-				self.append("list_of_unpresented_cheques",{
-					"posting_date": mode.get("posting_date"),
-					"name1": mode.get("name"),
-					"transaction_description": mode.get("reference_no"),
-					"type": mode.get("payment_type") ,
-					"amount" : mode.get("paid_amount")
-				})
+				mode = frappe.get_doc("Payment Entry", s.get("payment_entry"))
+
 				
-			if mode.get("mode_of_payment") == "Cheque" and mode.get("payment_type") == "Receive" and s.get('rec') == 0:
-				un_rec = un_rec + mode.get("paid_amount")
-				# print(" this is referec nooooooooooooooooooo", mode.get("reference_no"))
-				self.append("list_of_uncredited_cheques",{
-					"posting_date": mode.get("posting_date"),
-					"name1": mode.get("name"),
-					"transaction_description": mode.get("reference_no"),
-					"type": mode.get("payment_type") ,
-					"amount" : mode.get("paid_amount")
-				})	
+				
+				if mode.get("mode_of_payment") == "Cheque" and mode.get("payment_type") == "Pay" and s.get('rec') == 0:
+					un_rpay = un_rpay + mode.get("paid_amount")
+					# print(" this is referec nooooooooooooooooooo", mode.get("reference_no"))
+					self.append("list_of_unpresented_cheques",{
+						"posting_date": mode.get("posting_date"),
+						"name1": mode.get("name"),
+						"transaction_description": mode.get("reference_no"),
+						"type": mode.get("payment_type") ,
+						"amount" : mode.get("paid_amount")
+					})
+					
+				if mode.get("mode_of_payment") == "Cheque" and mode.get("payment_type") == "Receive" and s.get('rec') == 0:
+					un_rec = un_rec + mode.get("paid_amount")
+					# print(" this is referec nooooooooooooooooooo", mode.get("reference_no"))
+					self.append("list_of_uncredited_cheques",{
+						"posting_date": mode.get("posting_date"),
+						"name1": mode.get("name"),
+						"transaction_description": mode.get("reference_no"),
+						"type": mode.get("payment_type") ,
+						"amount" : mode.get("paid_amount")
+					})	
 
-			if s.get("rec") == 1 and mode:
-				r_bbal = r_bbal + mode.get("paid_amount")
+				if s.get("rec") == 1 and mode:
+					r_bbal = r_bbal + mode.get("paid_amount")
 
+			else: 
+				# print("elseee this is GL entry ", s.get("payment_entry"))	
+				if s.get("is_gl") == 1:
+					
+					mode_je = frappe.get_value("Journal Entry", s.get("payment_entry"), "name")
+					if mode_je:
+						mode = frappe.get_doc("Journal Entry", s.get("payment_entry"))
+						mop = frappe.get_value("Journal Entry", s.get("payment_entry"), "mode_of_payment")
+						if mop == "Cheque" and flt(s.get("receipt"))>0 and s.get('rec') == 0:
+							un_rpay = un_rpay + flt(s.get("receipt"))
+							self.append("list_of_unpresented_cheques",{
+								"posting_date": mode.get("posting_date"),
+								"name1": mode.get("name"),
+								"transaction_description": mode.get("cheque_no"),
+								"type": "Pay" ,
+								"amount" : s.get("receipt")
+							})
+
+						if mop == "Cheque" and flt(s.get("payment")) >0 and s.get('rec') == 0:
+							un_rec = un_rec + flt(s.get("payment"))
+							
+							self.append("list_of_uncredited_cheques",{
+								"posting_date": mode.get("posting_date"),
+								"name1": mode.get("name"),
+								"transaction_description": mode.get("cheque_no"),
+								"type":"Receive" ,
+								"amount" : s.get("payment")
+							})	
+				
+					
 		# self.balance_per_bank_statement = sum_deposit - sum_withdraw
 		self.unreconciled_payment = un_rpay
 		self.unreconciled_receipt = un_rec
@@ -235,8 +271,9 @@ class BankReconciliation(Document):
 			# print(" this is three 3333333333333")
 			for b in self.bank_reconciliation_entries :	
 				for s in self.bank_statement_import_view:
-					if b.get("party_name") == s.get("party_name") and b.get("amount") == s.get("amount") :
-						b.rec = s.rec = 1				
+					if b.get("party_name"): 
+						if b.get("party_name") == s.get("party_name") and b.get("amount") == s.get("amount") :
+							b.rec = s.rec = 1				
 
 	@frappe.whitelist()
 	def direct_withdraw(self):
