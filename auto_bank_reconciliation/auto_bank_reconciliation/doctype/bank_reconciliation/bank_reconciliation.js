@@ -145,7 +145,7 @@ frappe.ui.form.on('Bank Reconciliation', {
 		}
 	},
 
-	update_unpresented_cheques: function(frm) {
+	get_unpresented_cheques: function(frm) {
 			frm.clear_table("list_of_unpresented_cheques")
 
 				frm.call({
@@ -178,7 +178,7 @@ frappe.ui.form.on('Bank Reconciliation', {
 			},
 
 
-	update_uncredited_cheques: function(frm) {
+	get_uncredited_cheques: function(frm) {
 
 		frm.clear_table("list_of_uncredited_cheques")
 

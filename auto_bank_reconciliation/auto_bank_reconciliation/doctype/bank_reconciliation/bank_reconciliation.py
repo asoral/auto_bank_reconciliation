@@ -21,7 +21,9 @@ class BankReconciliation(Document):
 			if s.get("rec") == 1:
 				print(" inside rec 22222222222222222")
 				frappe.db.set_value('Bank Statement', s.get("name1"), 'rec', 0, update_modified=False)
-	
+
+	def before_save(self):
+		self.reconciled_bank_balance = self.unreconciled_receipt - self.unreconciled_payment + self.balance_per_bank_statement
 
 	def on_submit(self):
 		# print(" we are submitting  00000000000000000000")
@@ -130,7 +132,7 @@ class BankReconciliation(Document):
 					a = frappe.get_value("Customer", g.get("party"), "name")
 				if g.get("party_type") == "Supplier":
 					a = frappe.get_value("Supplier", g.get("party"), "name")
-					
+
 				self.append(
 						"bank_reconciliation_entries",{
 							"posting_date": g.get("posting_date"),

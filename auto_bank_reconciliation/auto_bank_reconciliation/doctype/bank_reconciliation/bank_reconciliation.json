@@ -34,8 +34,10 @@
   "bank_statement_import_view_section",
   "bank_statement_import_view",
   "reconciling_transactions_section",
+  "get_unpresented_cheques",
   "list_of_unpresented_cheques",
   "total_unpresented_cheques",
+  "get_uncredited_cheques",
   "list_of_uncredited_cheques",
   "total_uncredited_cheques",
   "reconciliation_tab",
@@ -332,12 +334,22 @@
    "label": "Reconciling Criteria",
    "options": "Reference and Amount\nName and Amount",
    "reqd": 1
+  },
+  {
+   "fieldname": "get_unpresented_cheques",
+   "fieldtype": "Button",
+   "label": "Get Unpresented Cheques"
+  },
+  {
+   "fieldname": "get_uncredited_cheques",
+   "fieldtype": "Button",
+   "label": "Get Uncredited Cheques"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-11 15:45:02.584355",
+ "modified": "2022-09-06 10:40:59.771590",
  "modified_by": "Administrator",
  "module": "Auto Bank Reconciliation",
  "name": "Bank Reconciliation",
