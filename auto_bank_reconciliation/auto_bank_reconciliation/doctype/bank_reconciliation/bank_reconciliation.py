@@ -132,6 +132,9 @@ class BankReconciliation(Document):
 					a = frappe.get_value("Customer", g.get("party"), "name")
 				if g.get("party_type") == "Supplier":
 					a = frappe.get_value("Supplier", g.get("party"), "name")
+				if g.get("party_type") == "Employee":
+					a = frappe.get_value("Employee", g.get("party"), "name")
+					
 
 				self.append(
 						"bank_reconciliation_entries",{
