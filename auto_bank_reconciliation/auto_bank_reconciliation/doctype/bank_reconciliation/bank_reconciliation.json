@@ -9,6 +9,7 @@
   "preferences",
   "bank_account_detail_section",
   "posting_date",
+  "reco_criteria",
   "column_break_8",
   "bank_account",
   "bank_account_gl",
@@ -16,9 +17,11 @@
   "period_from",
   "period_to",
   "column_break_7",
-  "reco_criteria",
   "previous_month_gl_closing_balance",
   "include_reconciled_trans",
+  "include_unreconciled_transactions",
+  "from_date",
+  "to_date",
   "balance_detail_section",
   "balance_per_bank_statement",
   "column_break_6",
@@ -114,9 +117,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "include_reconciled_trans",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Include Reconciled Trans"
   },
   {
@@ -344,12 +348,30 @@
    "fieldname": "get_uncredited_cheques",
    "fieldtype": "Button",
    "label": "Get Uncredited Cheques"
+  },
+  {
+   "default": "0",
+   "fieldname": "include_unreconciled_transactions",
+   "fieldtype": "Check",
+   "label": "Include Unreconciled Transactions"
+  },
+  {
+   "depends_on": "eval:doc.include_unreconciled_transactions == 1",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date"
+  },
+  {
+   "depends_on": "eval:doc.include_unreconciled_transactions == 1",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-06 10:40:59.771590",
+ "modified": "2022-09-16 11:24:01.331611",
  "modified_by": "Administrator",
  "module": "Auto Bank Reconciliation",
  "name": "Bank Reconciliation",

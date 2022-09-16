@@ -143,22 +143,22 @@ class BankReconciliation(Document):
 							"party" : g.get("party"),
 							"party_name" : a,
 							"payment_entry": g.get("voucher_no"),
-							"receipt": g.get("debit"), 
-							"payment": g.get("credit"), 
+							"receipt": g.get("debit"),
+							"payment": g.get("credit"),
 							"rec": g.get('rec'),
 							"ref_no": frappe.get_value("Journal Entry", g.voucher_no, "cheque_no"),
 							"reference_date": frappe.get_value("Journal Entry", g.voucher_no, "cheque_date"),
-							"amount": g.get("debit") if g.get("debit") > 0 else  g.get("credit"), 
+							"amount": g.get("debit") if g.get("debit") > 0 else  g.get("credit"),
 							"is_gl": 1
 						}
-					)			
+					)
 
 	@frappe.whitelist()
 	def get_reconsiling_entries(self):
-		# print(" 'get_reconsiling_entries', called")	
+		# print(" 'get_reconsiling_entries', called")
 
 		trans = []
-		if self.include_reconciled_trans == 1: 
+		if self.include_reconciled_trans == 1:
 			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]], "bank_account": self.bank_account }, ["*"])
 		else:
 			trans = frappe.get_all("Bank Statement", {"posting_date": ["Between", [self.period_from, self.period_to]], "rec":0, "bank_account": self.bank_account }, ["*"])
@@ -216,20 +216,22 @@ class BankReconciliation(Document):
 				# 		"transaction_description": mode.get("reference_no"),
 				# 		"type": mode.get("payment_type") ,
 				# 		"amount" : mode.get("paid_amount")
-				# 	})	
+					# })	
 
 				if s.get("rec") == 1 and mode:
 					r_bbal = r_bbal + mode.get("paid_amount")
 
-			else: 
+			
 				# print("elseee this is GL entry ", s.get("payment_entry"))	
+			else:
 				if s.get("is_gl") == 1:
-					
+						
 					mode_je = frappe.get_value("Journal Entry", s.get("payment_entry"), "name")
 					if mode_je:
 						mode = frappe.get_doc("Journal Entry", s.get("payment_entry"))
 						mop = frappe.get_value("Journal Entry", s.get("payment_entry"), "mode_of_payment")
-						if mop == "Cheque" and flt(s.get("receipt"))>0 and s.get('rec') == 0:
+						# if mop == "Cheque" and flt(s.get("receipt"))>0 and s.get('rec') == 0:
+						if flt(s.get("receipt"))>0 and s.get('rec') == 0:
 							un_rpay = un_rpay + flt(s.get("receipt"))
 							self.append("list_of_unpresented_cheques",{
 								"posting_date": mode.get("posting_date"),
@@ -268,6 +270,7 @@ class BankReconciliation(Document):
 		for s in self.bank_reconciliation_entries :
 			sum_deposit = sum_deposit + s.get("receipt") 
 			sum_withdraw = sum_withdraw + s.get("payment")
+
 	
 			
 			mode_pe = frappe.get_value("Payment Entry", s.get("payment_entry"), "name")
@@ -416,3 +419,63 @@ class BankReconciliation(Document):
 				})
 
 		self.total_direct_lodgment = total	
+
+
+	@frappe.whitelist()
+	def get_unreconciled_transactions(self):					
+
+		gl_entry = []
+		gl_entry = frappe.get_all("GL Entry", {"posting_date": ["Between", [self.from_date, self.to_date]], "docstatus": 1, "account": self.bank_account_gl, "rec": 0}, ["*"])			
+
+		gl = []
+		for p in self.bank_reconciliation_entries:
+			gl.append(p.payment_entry)
+
+		if gl_entry:
+			a = ""		
+			for g in gl_entry:
+				if g.get("party_type") == "Customer":
+					a = frappe.get_value("Customer", g.get("party"), "name")
+				if g.get("party_type") == "Supplier":
+					a = frappe.get_value("Supplier", g.get("party"), "name")
+				if g.get("party_type") == "Employee":
+					a = frappe.get_value("Employee", g.get("party"), "name")
+
+	
+				if g.voucher_type == "Journal Entry":
+					if g.voucher_no not in gl:
+						self.append(
+								"bank_reconciliation_entries",{
+									"posting_date": g.get("posting_date"),
+									"party_type": g.get("party_type"),
+									"party" : g.get("party"),
+									"party_name" : a,
+									"payment_entry": g.get("voucher_no"),
+									"receipt": g.get("debit"),
+									"payment": g.get("credit"),
+									"rec": g.get('rec'),
+									"ref_no": frappe.get_value("Journal Entry", g.voucher_no, "cheque_no"),
+									"reference_date": frappe.get_value("Journal Entry", g.voucher_no, "cheque_date"),
+									"amount": g.get("debit") if g.get("debit") > 0 else  g.get("credit"),
+									"is_gl": 1
+								}
+							)
+
+				if g.voucher_type == "Payment Entry":
+					if g.voucher_no not in gl:
+						self.append(
+								"bank_reconciliation_entries",{
+									"posting_date": g.get("posting_date"),
+									"party_type": g.get("party_type"),
+									"party" : g.get("party"),
+									"party_name" : a,
+									"payment_entry": g.get("voucher_no"),
+									"receipt": g.get("debit"),
+									"payment": g.get("credit"),
+									"rec": g.get('rec'),
+									"ref_no": frappe.get_value("Payment Entry", g.voucher_no, "reference_no"),
+									"reference_date": frappe.get_value("Payment Entry", g.voucher_no, "reference_date"),
+									"amount": g.get("debit") if g.get("debit") > 0 else  g.get("credit"),
+									"is_gl": 0
+								}
+							)

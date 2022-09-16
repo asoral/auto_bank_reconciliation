@@ -294,4 +294,19 @@ frappe.ui.form.on('Bank Reconciliation', {
 			frm.refresh_field("total_direct_lodgment")
 		}
 	},
+
+	to_date: function(frm) {
+		frm.call({
+			doc: frm.doc,
+			method: "get_unreconciled_transactions",
+			freeze: true,
+			freeze_message: __('Adding Reconsiling Entries'),
+			
+			callback: function() {
+				frm.refresh_field('bank_reconciliation_entries');
+			}
+		})
+	}
 });
+
+
