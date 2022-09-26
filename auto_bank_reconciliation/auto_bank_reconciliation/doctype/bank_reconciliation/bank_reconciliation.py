@@ -24,7 +24,7 @@ class BankReconciliation(Document):
 
 	def before_save(self):
 		self.reconciled_bank_balance = self.unreconciled_receipt - self.unreconciled_payment + self.balance_per_bank_statement
-
+		self.balance_at_cash_book= self.balance_at_bank_statement+self.total_uncredited_cheques-self.total_unpresented_cheques
 	def on_submit(self):
 		# print(" we are submitting  00000000000000000000")
 		for b in self.bank_reconciliation_entries :	
@@ -118,11 +118,11 @@ class BankReconciliation(Document):
 		gl_entry = []
 		if self.include_reconciled_trans == 1:
 			gl_entry = frappe.get_all("GL Entry", { "posting_date": ["Between", [self.period_from, self.period_to]], 
-									"docstatus": 1, "voucher_type": "Journal Entry", "account": self.bank_account_gl}, ["*"])
+									"is_cancelled": 0, "voucher_type": "Journal Entry", "account": self.bank_account_gl}, ["*"])
 
 		else:
 			gl_entry = frappe.get_all("GL Entry", { "posting_date": ["Between", [self.period_from, self.period_to]], 
-									"docstatus": 1, "voucher_type": "Journal Entry", "account": self.bank_account_gl, "rec": 0 }, ["*"])						
+									"is_cancelled": 0, "voucher_type": "Journal Entry", "account": self.bank_account_gl, "rec": 0 }, ["*"])						
 									
 		if gl_entry:
 			# print(" this is gl entry", gl_entry)
@@ -135,13 +135,13 @@ class BankReconciliation(Document):
 				if g.get("party_type") == "Employee":
 					a = frappe.get_value("Employee", g.get("party"), "name")
 					
-
+				je=frappe.get_doc("Journal Entry",g.get("voucher_no"))
 				self.append(
 						"bank_reconciliation_entries",{
 							"posting_date": g.get("posting_date"),
 							"party_type": g.get("party_type"),
 							"party" : g.get("party"),
-							"party_name" : a,
+							"party_name" : je.party_name,
 							"payment_entry": g.get("voucher_no"),
 							"receipt": g.get("debit"),
 							"payment": g.get("credit"),
@@ -231,14 +231,14 @@ class BankReconciliation(Document):
 						mode = frappe.get_doc("Journal Entry", s.get("payment_entry"))
 						mop = frappe.get_value("Journal Entry", s.get("payment_entry"), "mode_of_payment")
 						# if mop == "Cheque" and flt(s.get("receipt"))>0 and s.get('rec') == 0:
-						if flt(s.get("receipt"))>0 and s.get('rec') == 0:
-							un_rpay = un_rpay + flt(s.get("receipt"))
+						if flt(s.get("payment"))>0 and s.get('rec') == 0:
+							un_rpay = un_rpay + flt(s.get("payment"))
 							self.append("list_of_unpresented_cheques",{
 								"posting_date": mode.get("posting_date"),
 								"name1": mode.get("name"),
 								"transaction_description": mode.get("cheque_no"),
 								"type": "Pay" ,
-								"amount" : s.get("receipt")
+								"amount" : s.get("payment")
 							})
 
 						# if mop == "Cheque" and flt(s.get("payment")) >0 and s.get('rec') == 0:
@@ -325,15 +325,15 @@ class BankReconciliation(Document):
 						# 		"amount" : s.get("receipt")
 						# 	})
 
-						if mop == "Cheque" and flt(s.get("payment")) >0 and s.get('rec') == 0:
-							un_rec = un_rec + flt(s.get("payment"))
+						if mop == "Cheque" and flt(s.get("receipt")) >0 and s.get('rec') == 0:
+							un_rec = un_rec + flt(s.get("receipt"))
 							
 							self.append("list_of_uncredited_cheques",{
 								"posting_date": mode.get("posting_date"),
 								"name1": mode.get("name"),
 								"transaction_description": mode.get("cheque_no"),
 								"type":"Receive" ,
-								"amount" : s.get("payment")
+								"amount" : s.get("receipt")
 							})	
 				
 					
